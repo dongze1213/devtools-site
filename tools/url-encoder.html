@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Encode / Decode - Free Online Tool | DevToolKit</title>
+  <meta name="description" content="Free online URL encoder and decoder. Encode or decode URLs and query parameters instantly. 100% client-side, your data stays in your browser.">
+  <meta name="keywords" content="url encode, url decode, url encoder online, percent encoding, encode url parameters, decode url string">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/url-encoder.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">URL Encode / Decode</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="tool-area split">
+      <div>
+        <label for="urlInput">Input</label>
+        <textarea id="urlInput" placeholder="Enter URL or text to encode/decode..."></textarea>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="encodeURL()">Encode →</button>
+          <button class="btn" onclick="encodeURLComponent()">Encode Component →</button>
+          <button class="btn" onclick="decodeURL()">← Decode</button>
+          <button class="btn" onclick="copyResult()" data-i18n="copy">Copy</button>
+          <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>Output <button class="btn copy-btn" onclick="copyResult()">Copy</button></h3>
+        <div id="urlOutput" class="output-area">Result will appear here...</div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About URL Encoding</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        URL encoding (also known as percent-encoding) converts characters into a format that can be
+        transmitted over the Internet. Special characters like spaces, ampersands, and non-ASCII
+        characters are replaced with percent signs followed by two hexadecimal digits.
+      </p>
+      <h3 style="margin-top:16px;">encodeURI vs encodeURIComponent</h3>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        <strong>encodeURI</strong> encodes a full URL but preserves characters like <code>:</code>, <code>/</code>,
+        <code>?</code>, <code>&</code>, <code>=</code> that are part of the URL structure.
+        <strong>encodeURIComponent</strong> encodes everything, making it safe for use as a query parameter value.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('urlInput');
+    const output = document.getElementById('urlOutput');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+
+    function showMsg(el, text) {
+      el.textContent = text; el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function encodeURL() {
+      try {
+        output.textContent = encodeURI(input.value);
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'Encoded (full URL)!');
+      } catch(e) { showMsg(errorMsg, 'Error: ' + e.message); }
+    }
+
+    function encodeURLComponent() {
+      try {
+        output.textContent = encodeURIComponent(input.value);
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'Encoded (component)!');
+      } catch(e) { showMsg(errorMsg, 'Error: ' + e.message); }
+    }
+
+    function decodeURL() {
+      try {
+        output.textContent = decodeURIComponent(input.value);
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'Decoded!');
+      } catch(e) { showMsg(errorMsg, 'Invalid encoded string: ' + e.message); }
+    }
+
+    function copyResult() {
+      const text = output.textContent;
+      if (text && text !== 'Result will appear here...') {
+        navigator.clipboard.writeText(text).then(() => showMsg(successMsg, 'Copied!')).catch(() => {});
+      }
+    }
+
+    function clearAll() {
+      input.value = ''; output.textContent = 'Result will appear here...';
+      errorMsg.classList.remove('show'); successMsg.classList.remove('show');
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "url-encoder";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('urlInput', '.txt');</script>
+</body>
+</html>

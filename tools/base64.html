@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64 Encode / Decode - Free Online Tool | DevToolKit</title>
+  <meta name="description" content="Free online Base64 encoder and decoder. Convert text to Base64 or decode Base64 strings instantly. Supports image encoding. 100% client-side, no data sent to servers.">
+  <meta name="keywords" content="base64 encode, base64 decode, base64 converter, encode text to base64, decode base64 string, base64 image encoder">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/base64.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Base64 Encode / Decode</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="tool-area split">
+      <div>
+        <label for="b64Input">Input</label>
+        <textarea id="b64Input" placeholder="Enter text to encode, or Base64 string to decode..."></textarea>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="encodeB64()">Encode →</button>
+          <button class="btn" onclick="decodeB64()">← Decode</button>
+          <button class="btn" onclick="copyResult()">Copy Output</button>
+          <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>Output <button class="btn copy-btn" onclick="copyResult()">Copy</button></h3>
+        <div id="b64Output" class="output-area">Result will appear here...</div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Base64 Encoding</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format.
+        It is commonly used to encode data for transport over media designed to deal with text, such as
+        email (MIME) and storing complex data in JSON or XML. This tool processes everything locally in
+        your browser — your data is never transmitted to any server.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('b64Input');
+    const output = document.getElementById('b64Output');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+
+    function showMsg(el, text) {
+      el.textContent = text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function encodeB64() {
+      try {
+        const result = btoa(unescape(encodeURIComponent(input.value)));
+        output.textContent = result;
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'Encoded successfully!');
+      } catch(e) {
+        showMsg(errorMsg, 'Encoding error: ' + e.message);
+      }
+    }
+
+    function decodeB64() {
+      try {
+        const result = decodeURIComponent(escape(atob(input.value.trim())));
+        output.textContent = result;
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'Decoded successfully!');
+      } catch(e) {
+        showMsg(errorMsg, 'Invalid Base64 string: ' + e.message);
+      }
+    }
+
+    function copyResult() {
+      const text = output.textContent;
+      if (text && text !== 'Result will appear here...') {
+        navigator.clipboard.writeText(text).then(() => showMsg(successMsg, 'Copied!')).catch(() => {});
+      }
+    }
+
+    function clearAll() {
+      input.value = '';
+      output.textContent = 'Result will appear here...';
+      errorMsg.classList.remove('show');
+      successMsg.classList.remove('show');
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "base64";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('b64Input', '.txt');</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unix Timestamp Converter - Epoch to Date & Back | DevToolKit</title>
+  <meta name="description" content="Free online Unix timestamp converter. Convert epoch time to human-readable dates and vice versa. Supports seconds, milliseconds, and multiple timezones.">
+  <meta name="keywords" content="unix timestamp converter, epoch converter, unix time to date, date to epoch, timestamp converter online">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/timestamp.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Unix Timestamp Converter</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="current-ts">
+      <div class="ts-label">Current Unix Timestamp</div>
+      <div class="ts-value" id="liveTimestamp"></div>
+      <div class="ts-label" id="liveDate"></div>
+    </div>
+
+    <div class="tool-area split">
+      <div>
+        <h3 style="margin-bottom:12px;">Epoch → Date</h3>
+        <label for="epochInput" data-i18n="input_label">Enter Unix timestamp</label>
+        <input type="text" id="epochInput" placeholder="e.g. 1700000000">
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="epochToDate()">Convert →</button>
+          <button class="btn" onclick="copyText('epochResult')">Copy</button>
+        </div>
+        <div id="epochResult" class="output-area" style="min-height:80px;">Result...</div>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom:12px;">Date → Epoch</h3>
+        <label for="dateInput">Enter date/time</label>
+        <input type="datetime-local" id="dateInput" style="width:100%;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;">
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="dateToEpoch()">Convert →</button>
+          <button class="btn" onclick="copyText('dateResult')">Copy</button>
+          <button class="btn" onclick="setNow()">Now</button>
+        </div>
+        <div id="dateResult" class="output-area" style="min-height:80px;">Result...</div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Unix Timestamps</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Unix time (also known as epoch time) is the number of seconds elapsed since January 1, 1970
+        (UTC), not counting leap seconds. It is widely used in Unix-like operating systems, databases,
+        and programming languages. This tool converts between Unix timestamps and human-readable dates
+        with timezone support.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    function updateLive() {
+      const now = Math.floor(Date.now() / 1000);
+      document.getElementById('liveTimestamp').textContent = now;
+      document.getElementById('liveDate').textContent = new Date().toISOString();
+    }
+    updateLive();
+    setInterval(updateLive, 1000);
+
+    function epochToDate() {
+      const val = document.getElementById('epochInput').value.trim();
+      let ms = Number(val);
+      if (isNaN(ms)) { document.getElementById('epochResult').textContent = 'Invalid timestamp'; return; }
+      // Auto-detect seconds vs milliseconds
+      if (ms < 1e12) ms *= 1000;
+      const d = new Date(ms);
+      document.getElementById('epochResult').textContent =
+        `UTC:   ${d.toUTCString()}\nISO:   ${d.toISOString()}\nLocal: ${d.toLocaleString()}\n\nSeconds:      ${Math.floor(ms/1000)}\nMilliseconds: ${ms}`;
+    }
+
+    function dateToEpoch() {
+      const val = document.getElementById('dateInput').value;
+      if (!val) { document.getElementById('dateResult').textContent = 'Please select a date'; return; }
+      const d = new Date(val);
+      document.getElementById('dateResult').textContent =
+        `Seconds:      ${Math.floor(d.getTime()/1000)}\nMilliseconds: ${d.getTime()}\nISO:          ${d.toISOString()}`;
+    }
+
+    function setNow() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset() * 60000;
+      const local = new Date(now - offset);
+      document.getElementById('dateInput').value = local.toISOString().slice(0, 16);
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).textContent;
+      if (text && text !== 'Result...') {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "timestamp";</script>
+  <script src="../translations.js"></script>
+  <script src="../i18n.js"></script>
+</body>
+</html>

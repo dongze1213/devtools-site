@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON to CSV Converter - Free Online Tool | DevToolKit</title>
+  <meta name="description" content="Free online JSON to CSV converter and CSV to JSON converter. Convert JSON data to CSV format for Excel or Google Sheets. 100% client-side processing.">
+  <meta name="keywords" content="json to csv, csv to json, convert json to csv, json csv converter, json to excel, csv to json online">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/json-csv.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a></nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">JSON ↔ CSV Converter</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="btn-group" style="margin-bottom:16px;">
+      <button class="btn btn-primary" onclick="setMode('j2c')">JSON → CSV</button>
+      <button class="btn" onclick="setMode('c2j')">CSV → JSON</button>
+    </div>
+
+    <div class="tool-area split">
+      <div>
+        <label for="inputArea" id="inputLabel">Paste your JSON array here</label>
+        <textarea id="inputArea" placeholder='[{"name":"Alice","age":30,"city":"NYC"},{"name":"Bob","age":25,"city":"LA"}]'></textarea>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="convertBtn" onclick="convert()">Convert</button>
+          <button class="btn" onclick="copyResult()">Copy Output</button>
+          <button class="btn" onclick="downloadResult()">Download</button>
+          <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>Output <button class="btn copy-btn" onclick="copyResult()">Copy</button></h3>
+        <div id="outputArea" class="output-area">Converted data will appear here...</div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About JSON to CSV Conversion</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Convert JSON data to CSV format for use in Excel, Google Sheets, or any spreadsheet application.
+        You can also convert CSV data back to JSON format. All processing is done locally in your browser
+        — your data is never sent to any server.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    var mode = 'j2c';
+    var inputArea = document.getElementById('inputArea');
+    var outputArea = document.getElementById('outputArea');
+    var errorMsg = document.getElementById('errorMsg');
+    var successMsg = document.getElementById('successMsg');
+    var inputLabel = document.getElementById('inputLabel');
+
+    function showMsg(el, text) {
+      el.textContent = text;
+      el.classList.add('show');
+      setTimeout(function() { el.classList.remove('show'); }, 3000);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ── 错误高亮 textarea ─────────────────────────────────
+    function highlightErrorInput(pos) {
+      inputArea.classList.add('error-at-position');
+      inputArea.focus();
+      if (pos !== undefined && pos >= 0) {
+        inputArea.setSelectionRange(pos, pos + 1);
+      }
+    }
+    function clearErrorHighlight() {
+      inputArea.classList.remove('error-at-position');
+    }
+
+    // ── JSON 错误定位 ────────────────────────────────────
+    function parseJsonError(jsonStr, error) {
+      var posMatch = error.message.match(/position\s+(\d+)/i);
+      if (posMatch) {
+        var pos = parseInt(posMatch[1], 10);
+        var before = jsonStr.substring(0, pos);
+        var lines = before.split('\n');
+        var line = lines.length;
+        var col = lines[lines.length - 1].length + 1;
+        var ch = (pos < jsonStr.length) ? jsonStr[pos] : 'EOF';
+        return { pos: pos, line: line, col: col, char: ch, found: true };
+      }
+      var lineMatch = error.message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+      if (lineMatch) {
+        return { pos: -1, line: parseInt(lineMatch[1], 10), col: parseInt(lineMatch[2], 10), char: '', found: true };
+      }
+      return { pos: -1, line: -1, col: -1, char: '', found: false };
+    }
+
+    function getErrorContext(jsonStr, pos) {
+      var lines = jsonStr.split('\n');
+      var lineIdx = jsonStr.substring(0, pos).split('\n').length - 1;
+      var start = Math.max(0, lineIdx - 2);
+      var end = Math.min(lines.length, lineIdx + 3);
+      var snippet = '';
+      for (var i = start; i < end; i++) {
+        var num = String(i + 1).padStart(3, ' ');
+        snippet += num + ' | ' + lines[i] + '\n';
+      }
+      var lastNl = jsonStr.lastIndexOf('\n', pos - 1);
+      var colInLine = (lastNl === -1) ? pos : (pos - lastNl - 1);
+      var pointer = '     ' + ' '.repeat(3 + colInLine) + '^';
+      return { snippet: snippet, pointer: pointer };
+    }
+
+    // ── CSV 错误定位 ──────────────────────────────────────
+    var csvErrorLine = -1;
+
+    function getCsvErrorContext(csvStr, lineIdx) {
+      var lines = csvStr.split('\n');
+      var start = Math.max(0, lineIdx - 2);
+      var end = Math.min(lines.length, lineIdx + 3);
+      var snippet = '';
+      for (var i = start; i < end; i++) {
+        var num = String(i + 1).padStart(3, ' ');
+        snippet += num + ' | ' + lines[i] + '\n';
+      }
+      var pointer = '     ' + ' '.repeat(3) + '^';
+      return { snippet: snippet, pointer: pointer };
+    }
+
+    // ── 显示详细错误 ──────────────────────────────────────
+    function showDetailedError(el, title, posText, snippet, pointer) {
+      var html = '<span class="error-title">' + title + '</span>';
+      if (posText) {
+        html += '<span class="error-position">' + posText + '</span>';
+      }
+      if (snippet) {
+        html += '<span class="error-snippet">' + escapeHtml(snippet) + '\n' + (pointer || '') + '</span>';
+      }
+      el.innerHTML = html;
+      el.classList.add('show', 'detailed');
+    }
+
+    // ── 模式切换 ──────────────────────────────────────────
+    function setMode(m) {
+      mode = m;
+      clearErrorHighlight();
+      errorMsg.classList.remove('show', 'detailed');
+      if (m === 'j2c') {
+        inputLabel.textContent = 'Paste your JSON array here';
+        inputArea.placeholder = '[{"name":"Alice","age":30},{"name":"Bob","age":25}]';
+        document.querySelectorAll('.btn-group .btn')[0].classList.add('btn-primary');
+        document.querySelectorAll('.btn-group .btn')[1].classList.remove('btn-primary');
+      } else {
+        inputLabel.textContent = 'Paste your CSV data here';
+        inputArea.placeholder = 'name,age,city\nAlice,30,NYC\nBob,25,LA';
+        document.querySelectorAll('.btn-group .btn')[1].classList.add('btn-primary');
+        document.querySelectorAll('.btn-group .btn')[0].classList.remove('btn-primary');
+      }
+    }
+
+    // ── JSON → CSV ────────────────────────────────────────
+    function jsonToCsv(json) {
+      var arr = Array.isArray(json) ? json : [json];
+      if (!arr.length) throw new Error('JSON array is empty — nothing to convert');
+      var headers = Object.keys(arr[0]);
+      if (!headers.length) throw new Error('First element of the JSON array has no keys');
+      var rows = arr.map(function(obj, idx) {
+        if (typeof obj !== 'object' || obj === null) {
+          throw new Error('Element ' + (idx + 1) + ' is not a valid JSON object');
+        }
+        return headers.map(function(h) {
+          var val = obj[h] === undefined ? '' : String(obj[h]);
+          if (val.indexOf(',') !== -1 || val.indexOf('"') !== -1 || val.indexOf('\n') !== -1) {
+            val = '"' + val.replace(/"/g, '""') + '"';
+          }
+          return val;
+        }).join(',');
+      });
+      return [headers.join(','), rows.join('\n')].join('\n');
+    }
+
+    // ── CSV → JSON（增强报错）─────────────────────────────
+    function csvToJson(csv) {
+      var lines = csv.trim().split('\n');
+      if (lines.length < 2) throw new Error('CSV needs at least a header row and one data row. Got ' + lines.length + ' line(s).');
+
+      csvErrorLine = -1;
+
+      var parseResult = parseCsvLineEnhanced(lines[0], 0);
+      var headers = parseResult.values;
+
+      // 检查重复表头
+      var seen = {};
+      for (var d = 0; d < headers.length; d++) {
+        var h = headers[d].trim();
+        if (seen[h] !== undefined) {
+          throw new Error('Duplicate column name at column ' + (d + 1) + ': "' + h + '". Column names must be unique.');
+        }
+        seen[h] = d;
+      }
+
+      var result = [];
+      for (var i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        var lineResult = parseCsvLineEnhanced(lines[i], i);
+        var values = lineResult.values;
+        if (values.length !== headers.length) {
+          csvErrorLine = i;
+          var msg = 'Line ' + (i + 1) + ' has ' + values.length + ' column(s), but header has ' + headers.length + ' column(s). ';
+          msg += 'Check for missing/extra commas or unclosed quotes.';
+          throw new Error(msg);
+        }
+        var obj = {};
+        for (var j = 0; j < headers.length; j++) {
+          var val = values[j] || '';
+          // Convert numeric strings to numbers (but keep phone numbers like "0123" as strings)
+          if (val !== '' && !isNaN(val) && val.charAt(0) !== '0') {
+            val = Number(val);
+          }
+          obj[headers[j].trim()] = val;
+        }
+        result.push(obj);
+      }
+      return result;
+    }
+
+    // 增强版 CSV 行解析，检测未闭合引号
+    function parseCsvLineEnhanced(line, lineIdx) {
+      var result = [];
+      var current = '';
+      var inQuotes = false;
+      for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (inQuotes) {
+          if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
+          else if (ch === '"') { inQuotes = false; }
+          else { current += ch; }
+        } else {
+          if (ch === '"') { inQuotes = true; }
+          else if (ch === ',') { result.push(current); current = ''; }
+          else { current += ch; }
+        }
+      }
+      if (inQuotes) {
+        csvErrorLine = lineIdx;
+        throw new Error('Line ' + (lineIdx + 1) + ' has an unclosed double-quote. Check that quotes are properly paired.');
+      }
+      result.push(current);
+      return { values: result };
+    }
+
+    function parseCsvLine(line) {
+      var result = [];
+      var current = '';
+      var inQuotes = false;
+      for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (inQuotes) {
+          if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
+          else if (ch === '"') { inQuotes = false; }
+          else { current += ch; }
+        } else {
+          if (ch === '"') { inQuotes = true; }
+          else if (ch === ',') { result.push(current); current = ''; }
+          else { current += ch; }
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    // ── 主转换函数（增强报错）─────────────────────────────
+    function convert() {
+      clearErrorHighlight();
+      errorMsg.classList.remove('show', 'detailed');
+
+      var raw = inputArea.value.trim();
+      if (!raw) {
+        showDetailedError(errorMsg, 'Input is empty', 'Paste JSON or CSV data above', '', '');
+        inputArea.classList.add('error-at-position');
+        inputArea.focus();
+        return;
+      }
+
+      try {
+        if (mode === 'j2c') {
+          var json = JSON.parse(raw);
+          outputArea.textContent = jsonToCsv(json);
+          showMsg(successMsg, 'Converted JSON → CSV!');
+        } else {
+          var json2 = csvToJson(raw);
+          outputArea.textContent = JSON.stringify(json2, null, 2);
+          showMsg(successMsg, 'Converted CSV → JSON!');
+        }
+        errorMsg.classList.remove('show', 'detailed');
+      } catch(e) {
+        // JSON 解析错误（j2c 模式）
+        if (mode === 'j2c') {
+          var errInfo = parseJsonError(raw, e);
+          if (errInfo.found) {
+            var posText = 'JSON error at line ' + errInfo.line + ', column ' + errInfo.col;
+            if (errInfo.char && errInfo.char !== 'EOF') {
+              posText += ' (near character: "' + escapeHtml(errInfo.char) + '")';
+            }
+            var ctx = getErrorContext(raw, errInfo.pos);
+            showDetailedError(errorMsg, 'JSON Parse Error', posText, ctx.snippet, ctx.pointer);
+            highlightErrorInput(errInfo.pos);
+          } else {
+            showDetailedError(errorMsg, 'JSON Parse Error', e.message, '', '');
+          }
+          return;
+        }
+
+        // CSV 解析错误（c2j 模式）
+        if (mode === 'c2j' && csvErrorLine >= 0) {
+          var ctx2 = getCsvErrorContext(raw, csvErrorLine);
+          showDetailedError(errorMsg, 'CSV Parse Error', 'Error at line ' + (csvErrorLine + 1), ctx2.snippet, ctx2.pointer);
+          var lineStart = raw.split('\n').slice(0, csvErrorLine).join('\n').length + (csvErrorLine > 0 ? 1 : 0);
+          highlightErrorInput(lineStart);
+          return;
+        }
+
+        // 通用错误
+        showDetailedError(errorMsg, 'Conversion Failed', e.message, '', '');
+      }
+    }
+
+    function copyResult() {
+      var text = outputArea.textContent;
+      if (text && text !== 'Converted data will appear here...') {
+        navigator.clipboard.writeText(text).then(function() { showMsg(successMsg, 'Copied!'); }).catch(() => {});
+      }
+    }
+
+    function downloadResult() {
+      var text = outputArea.textContent;
+      if (!text || text === 'Converted data will appear here...') return;
+      var ext = mode === 'j2c' ? 'csv' : 'json';
+      var mime = mode === 'j2c' ? 'text/csv' : 'application/json';
+      var blob = new Blob([text], { type: mime });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'converted.' + ext;
+      a.click();
+    }
+
+    function clearAll() {
+      inputArea.value = '';
+      outputArea.textContent = 'Converted data will appear here...';
+      errorMsg.classList.remove('show', 'detailed');
+      successMsg.classList.remove('show');
+      clearErrorHighlight();
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "json-csv";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('inputArea', '.json,.csv');</script>
+</body>
+</html>

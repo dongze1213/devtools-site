@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UUID Generator - Generate Random UUIDs Online | DevToolKit</title>
+  <meta name="description" content="Free online UUID generator. Generate random UUID v4 identifiers instantly. Single or batch generation up to 1000 UUIDs at once.">
+  <meta name="keywords" content="uuid generator, generate uuid, random uuid, uuid v4, unique identifier generator, guid generator">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/uuid-generator.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">UUID Generator</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+      <label style="margin:0;">Count:</label>
+      <select id="uuidCount">
+        <option value="1">1</option>
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+      </select>
+      <label class="checkbox-label"><input type="checkbox" id="uppercase"> Uppercase</label>
+      <label class="checkbox-label"><input type="checkbox" id="noDashes"> No dashes</label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="generate()">Generate UUIDs</button>
+      <button class="btn" onclick="copyAll()" data-i18n="copy">Copy All</button>
+      <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+    </div>
+
+    <div id="uuidList" class="uuid-list" style="margin-top:16px;">
+      <p style="color:var(--text3);text-align:center;padding:20px;">Click "Generate" to create UUIDs</p>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About UUID</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        A UUID (Universally Unique Identifier) is a 128-bit identifier that is unique across both space
+        and time. This tool generates version 4 UUIDs, which are random-based. UUIDs are commonly used
+        as database primary keys, session IDs, and in distributed systems where unique identification is
+        required without central coordination.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    }
+
+    function generate() {
+      const count = parseInt(document.getElementById('uuidCount').value);
+      const upper = document.getElementById('uppercase').checked;
+      const noDashes = document.getElementById('noDashes').checked;
+      const list = document.getElementById('uuidList');
+      list.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        let uuid = uuidv4();
+        if (noDashes) uuid = uuid.replace(/-/g, '');
+        if (upper) uuid = uuid.toUpperCase();
+
+        const item = document.createElement('div');
+        item.className = 'uuid-item';
+        item.innerHTML = `<span style="font-family:monospace;color:var(--accent)">${uuid}</span>
+          <button class="btn" style="font-size:11px;padding:4px 8px;" onclick="navigator.clipboard.writeText('${uuid}').catch(()=>{})">Copy</button>`;
+        list.appendChild(item);
+      }
+    }
+
+    function copyAll() {
+      const items = document.querySelectorAll('.uuid-item span');
+      if (!items.length) return;
+      const text = Array.from(items).map(s => s.textContent).join('\n');
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+
+    function clearAll() {
+      document.getElementById('uuidList').innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;">Click "Generate" to create UUIDs</p>';
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "uuid-generator";</script>
+  <script src="../translations.js"></script>
+  <script src="../i18n.js"></script>
+</body>
+</html>

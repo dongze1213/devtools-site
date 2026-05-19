@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Preview - Live Editor & Renderer | DevToolKit</title>
+  <meta name="description" content="Free online Markdown preview tool. Write Markdown and see live rendered output instantly. Export to HTML. 100% client-side processing.">
+  <meta name="keywords" content="markdown preview, markdown editor, markdown renderer, markdown to html, live markdown preview">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/markdown-preview.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Markdown Preview</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="btn-group" style="margin-bottom:16px;">
+      <button class="btn" onclick="copyHtml()">Copy HTML</button>
+      <button class="btn" onclick="downloadHtml()">Download HTML</button>
+      <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+    </div>
+
+    <div class="diff-container">
+      <div>
+        <label for="mdInput">Markdown Input</label>
+        <textarea id="mdInput" oninput="render()" style="min-height:400px;"># Hello World
+
+This is a **Markdown** preview tool.
+
+## Features
+
+- Live preview
+- Export to HTML
+- 100% client-side
+
+### Code Example
+
+```javascript
+const greeting = "Hello, DevToolKit!";
+console.log(greeting);
+```
+
+> This is a blockquote. It can span multiple lines.
+
+---
+
+1. First item
+2. Second item
+3. Third item
+
+[Visit DevToolKit](/) for more tools.</textarea>
+      </div>
+      <div>
+        <label>Preview</label>
+        <div id="mdPreview" class="md-preview"></div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Markdown</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Markdown is a lightweight markup language for creating formatted text using a plain-text editor.
+        It is widely used for README files, documentation, blog posts, and messaging platforms. This
+        tool provides a live preview of your Markdown as you type, with the ability to export the
+        rendered HTML output.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function mdToHtml(md) {
+      // Step 1: extract fenced code blocks to protect them from other replacements
+      const codeBlocks = [];
+      let s = md.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+        const cls = lang ? ' class="language-' + lang + '"' : '';
+        const safe = '<pre><code' + cls + '>' + escHtml(code) + '</code></pre>';
+        codeBlocks.push(safe);
+        return '\x00CODE' + (codeBlocks.length - 1) + '\x00';
+      });
+
+      // Step 2: escape HTML entities in the remaining text
+      s = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      // Step 3: apply markdown transformations
+      s = s
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^---$/gm, '<hr>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+
+      // Step 4: restore code blocks
+      s = s.replace(/\x00CODE(\d+)\x00/g, (m, i) => codeBlocks[+i]);
+
+      return '<p>' + s + '</p>';
+    }
+
+    function render() {
+      document.getElementById('mdPreview').innerHTML = mdToHtml(document.getElementById('mdInput').value);
+    }
+
+    function copyHtml() {
+      navigator.clipboard.writeText(document.getElementById('mdPreview').innerHTML).catch(() => {});
+    }
+
+    function downloadHtml() {
+      const html = document.getElementById('mdPreview').innerHTML;
+      const full = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.6;}code{background:#f0f0f0;padding:2px 6px;border-radius:3px;}pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;}</style></head><body>' + html + '</body></html>';
+      const blob = new Blob([full], {type: 'text/html'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'document.html';
+      a.click();
+    }
+
+    function clearAll() {
+      document.getElementById('mdInput').value = '';
+      document.getElementById('mdPreview').innerHTML = '';
+    }
+
+    render();
+  </script>
+
+  <script>window.I18N_PAGE_ID = "markdown-preview";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('mdInput', '.md,.txt', function(){ render(); });</script>
+</body>
+</html>

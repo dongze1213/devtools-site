@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorem Ipsum Generator - Free Placeholder Text | DevToolKit</title>
+  <meta name="description" content="Free lorem ipsum generator. Create placeholder text in paragraphs, sentences, or words. Customizable options for web design and development mockups.">
+  <meta name="keywords" content="lorem ipsum generator, placeholder text, dummy text, lipsum generator, lorem ipsum paragraphs">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/lorem-ipsum.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Lorem Ipsum Generator</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+      <label style="margin:0;">Type:</label>
+      <select id="lipsumType">
+        <option value="paragraphs">Paragraphs</option>
+        <option value="sentences">Sentences</option>
+        <option value="words">Words</option>
+      </select>
+      <label style="margin:0;">Amount:</label>
+      <input type="number" id="lipsumCount" value="3" min="1" max="100" style="width:80px;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;">
+      <label class="checkbox-label"><input type="checkbox" id="startLipsum" checked> Start with "Lorem ipsum..."</label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="generate()" data-i18n="generate">Generate</button>
+      <button class="btn" onclick="copyResult()" data-i18n="copy">Copy</button>
+    </div>
+
+    <div id="lipsumOutput" class="output-area" style="margin-top:16px;white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.8;">
+      Generated text will appear here...
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Lorem Ipsum</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Lorem ipsum is a placeholder text commonly used in the graphic, print, and publishing industries
+        for previewing layouts and visual mockups. It has been the industry's standard dummy text since
+        the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    const WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+    const FIRST = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+    function randWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
+    function randSentence(minW=5, maxW=15) {
+      const len = minW + Math.floor(Math.random() * (maxW - minW));
+      let s = Array.from({length: len}, randWord).join(' ');
+      return s.charAt(0).toUpperCase() + s.slice(1) + '.';
+    }
+    function randParagraph() {
+      const count = 3 + Math.floor(Math.random() * 4);
+      return Array.from({length: count}, () => randSentence()).join(' ');
+    }
+
+    function generate() {
+      const type = document.getElementById('lipsumType').value;
+      const count = parseInt(document.getElementById('lipsumCount').value) || 1;
+      const startWith = document.getElementById('startLipsum').checked;
+      let result = '';
+
+      if (type === 'paragraphs') {
+        const paras = [];
+        if (startWith) paras.push(FIRST + ' ' + randSentence() + ' ' + randSentence());
+        while (paras.length < count) paras.push(randParagraph());
+        result = paras.slice(0, count).join('\n\n');
+      } else if (type === 'sentences') {
+        const sents = [];
+        if (startWith) sents.push(FIRST);
+        while (sents.length < count) sents.push(randSentence());
+        result = sents.slice(0, count).join(' ');
+      } else {
+        const words = startWith ? ['Lorem', 'ipsum'] : [];
+        while (words.length < count) words.push(randWord());
+        result = words.slice(0, count).join(' ');
+      }
+
+      document.getElementById('lipsumOutput').textContent = result;
+    }
+
+    function copyResult() {
+      const text = document.getElementById('lipsumOutput').textContent;
+      if (text && text !== 'Generated text will appear here...') {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "lorem-ipsum";</script>
+  <script src="../translations.js"></script>
+  <script src="../i18n.js"></script>
+</body>
+</html>

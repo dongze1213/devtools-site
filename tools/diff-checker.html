@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diff Checker - Compare Text Online | DevToolKit</title>
+  <meta name="description" content="Free online diff checker. Compare two texts side by side and highlight differences instantly. 100% client-side text comparison tool.">
+  <meta name="keywords" content="diff checker, text compare, compare text online, find differences, text diff tool">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/diff-checker.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Diff Checker</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="btn-group" style="margin-bottom:16px;">
+      <button class="btn btn-primary" onclick="compare()" data-i18n="compare">Compare</button>
+      <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+    </div>
+
+    <div class="diff-container">
+      <div>
+        <label for="textA">Original Text</label>
+        <textarea id="textA" placeholder="Paste original text here..."></textarea>
+      </div>
+      <div>
+        <label for="textB">Modified Text</label>
+        <textarea id="textB" placeholder="Paste modified text here..."></textarea>
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px;">Differences</h3>
+    <div id="diffOutput" class="diff-output">Comparison result will appear here...</div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Diff Checker</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        This tool compares two texts line by line and highlights the differences. Added lines are shown
+        in green, removed lines in red. It uses the longest common subsequence (LCS) algorithm for
+        accurate diff results. All processing happens locally in your browser.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    function lcs(a, b) {
+      const m = a.length, n = b.length;
+      const dp = Array.from({length: m + 1}, () => new Array(n + 1).fill(0));
+      for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+          dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] + 1 : Math.max(dp[i-1][j], dp[i][j-1]);
+
+      const result = [];
+      let i = m, j = n;
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+          result.unshift({type: 'same', text: a[i-1]}); i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+          result.unshift({type: 'add', text: b[j-1]}); j--;
+        } else {
+          result.unshift({type: 'del', text: a[i-1]}); i--;
+        }
+      }
+      return result;
+    }
+
+    function compare() {
+      const a = document.getElementById('textA').value.split('\n');
+      const b = document.getElementById('textB').value.split('\n');
+      const diff = lcs(a, b);
+      const output = document.getElementById('diffOutput');
+      output.innerHTML = '';
+
+      diff.forEach(line => {
+        const div = document.createElement('div');
+        div.style.padding = '2px 8px';
+        if (line.type === 'add') {
+          div.className = 'diff-add';
+          div.textContent = '+ ' + line.text;
+        } else if (line.type === 'del') {
+          div.className = 'diff-del';
+          div.textContent = '- ' + line.text;
+        } else {
+          div.textContent = '  ' + line.text;
+          div.style.color = 'var(--text2)';
+        }
+        output.appendChild(div);
+      });
+
+      if (diff.every(d => d.type === 'same')) {
+        output.innerHTML = '<div style="color:var(--green);text-align:center;padding:20px;">Texts are identical!</div>';
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('textA').value = '';
+      document.getElementById('textB').value = '';
+      document.getElementById('diffOutput').innerHTML = 'Comparison result will appear here...';
+    }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "diff-checker";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('textA', '.txt'); setupFileUpload('textB', '.txt');</script>
+</body>
+</html>

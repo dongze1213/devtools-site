@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevToolKit - Free Online Developer Tools | JSON, Base64, JWT & More</title>
+  <meta name="description" content="Free online developer tools that run 100% in your browser. JSON formatter, Base64 encoder, JWT decoder, URL encoder, and more. No data sent to servers.">
+  <meta name="keywords" content="developer tools, json formatter, base64 decode, jwt decoder, url encoder, online tools, free">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/">
+  <meta property="og:title" content="DevToolKit - Free Online Developer Tools">
+  <meta property="og:description" content="100% local developer tools. JSON, Base64, JWT, URL encoding and more. Your data never leaves your browser.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="./style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "DevToolKit",
+    "description": "Free online developer tools that run 100% in your browser",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="./index.html" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span>DevToolKit</span>
+      </a>
+      <nav class="nav">
+        <a href="#tools" data-i18n="nav_tools">Tools</a>
+        <a href="#about" data-i18n="nav_about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1 data-i18n="hero_title">Free Developer Tools</h1>
+        <p class="hero-sub" data-i18n="hero_sub">100% client-side. Your data never leaves your browser.</p>
+        <div class="privacy-badge">
+          <span class="badge-icon">🔒</span>
+          <span data-i18n="privacy_badge">Privacy First — No server processing, no data collection</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="tools-section">
+      <div class="container">
+        <h2 data-i18n="all_tools">All Tools</h2>
+        <div class="tools-grid">
+
+          <a href="./tools/json-formatter.html" class="tool-card">
+            <div class="tool-icon">{ }</div>
+            <h3 data-i18n="json_name">JSON Formatter</h3>
+            <p data-i18n="json_desc">Beautify, minify, and validate JSON data. Handles large files with ease.</p>
+            <span class="tool-tag" data-i18n="tag_popular">Popular</span>
+          </a>
+
+          <a href="./tools/base64.html" class="tool-card">
+            <div class="tool-icon">B64</div>
+            <h3 data-i18n="base64_name">Base64 Encode / Decode</h3>
+            <p data-i18n="base64_desc">Encode text to Base64 or decode Base64 strings. Supports image conversion.</p>
+            <span class="tool-tag" data-i18n="tag_popular">Popular</span>
+          </a>
+
+          <a href="./tools/url-encoder.html" class="tool-card">
+            <div class="tool-icon">%</div>
+            <h3 data-i18n="url_name">URL Encode / Decode</h3>
+            <p data-i18n="url_desc">Encode or decode URLs and query parameters instantly.</p>
+          </a>
+
+          <a href="./tools/json-csv.html" class="tool-card">
+            <div class="tool-icon">⇄</div>
+            <h3 data-i18n="jsoncsv_name">JSON ↔ CSV Converter</h3>
+            <p data-i18n="jsoncsv_desc">Convert JSON data to CSV for Excel, or CSV back to JSON format.</p>
+            <span class="tool-tag" data-i18n="tag_popular">Popular</span>
+          </a>
+
+          <a href="./tools/jwt-decoder.html" class="tool-card">
+            <div class="tool-icon">🔑</div>
+            <h3 data-i18n="jwt_name">JWT Decoder</h3>
+            <p data-i18n="jwt_desc">Decode and inspect JSON Web Tokens. View header, payload, and signature.</p>
+          </a>
+
+          <a href="./tools/timestamp.html" class="tool-card">
+            <div class="tool-icon">🕐</div>
+            <h3 data-i18n="timestamp_name">Unix Timestamp Converter</h3>
+            <p data-i18n="timestamp_desc">Convert between Unix timestamps and human-readable dates with timezone support.</p>
+          </a>
+
+          <a href="./tools/uuid-generator.html" class="tool-card">
+            <div class="tool-icon">🆔</div>
+            <h3 data-i18n="uuid_name">UUID Generator</h3>
+            <p data-i18n="uuid_desc">Generate random UUIDs (v4) instantly. Single or batch generation.</p>
+          </a>
+
+          <a href="./tools/hash-generator.html" class="tool-card">
+            <div class="tool-icon">#️</div>
+            <h3 data-i18n="hash_name">Hash Generator</h3>
+            <p data-i18n="hash_desc">Generate MD5, SHA-1, SHA-256, SHA-512 hashes from any text input.</p>
+          </a>
+
+          <a href="./tools/lorem-ipsum.html" class="tool-card">
+            <div class="tool-icon">Aa</div>
+            <h3 data-i18n="lorem_name">Lorem Ipsum Generator</h3>
+            <p data-i18n="lorem_desc">Generate placeholder text in paragraphs, sentences, or words.</p>
+          </a>
+
+          <a href="./tools/diff-checker.html" class="tool-card">
+            <div class="tool-icon">≠</div>
+            <h3 data-i18n="diff_name">Diff Checker</h3>
+            <p data-i18n="diff_desc">Compare two texts side by side and highlight differences.</p>
+          </a>
+
+          <a href="./tools/color-converter.html" class="tool-card">
+            <div class="tool-icon">🎨</div>
+            <h3 data-i18n="color_name">Color Converter</h3>
+            <p data-i18n="color_desc">Convert colors between HEX, RGB, HSL, and Tailwind CSS classes.</p>
+          </a>
+
+          <a href="./tools/markdown-preview.html" class="tool-card">
+            <div class="tool-icon">M↓</div>
+            <h3 data-i18n="markdown_name">Markdown Preview</h3>
+            <p data-i18n="markdown_desc">Write Markdown and see live preview. Export to HTML anytime.</p>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="container">
+        <h2 data-i18n="why_title">Why DevToolKit?</h2>
+        <div class="features-grid">
+          <div class="feature">
+            <h3 data-i18n="feat1_title">🔒 100% Private</h3>
+            <p><span data-i18n="feat1_desc">All processing happens in your browser. Your data is never sent to any server. No tracking, no cookies, no analytics.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat2_title">⚡ Fast</h3>
+            <p><span data-i18n="feat2_desc">No server round-trips. Everything runs locally using modern Web APIs and Web Workers for heavy processing.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat3_title">📱 Works Offline</h3>
+            <p><span data-i18n="feat3_desc">Once loaded, all tools work without internet. Add to home screen for instant access.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat4_title">🆓 Always Free</h3>
+            <p><span data-i18n="feat4_desc">No sign-up required. No usage limits. No premium tiers. Every tool is completely free.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat5_title">🎯 Precise Error Location</h3>
+            <p><span data-i18n="feat5_desc">Other tools only say "Invalid JSON". We tell you the exact line and column, with code context.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat6_title">🌍 7 Languages</h3>
+            <p><span data-i18n="feat6_desc">English, Chinese, Japanese, Korean, Spanish, Portuguese, French. Auto-detects browser language.</span></p>
+          </div>
+          <div class="feature">
+            <h3 data-i18n="feat7_title">📁 File Upload</h3>
+            <p><span data-i18n="feat7_desc">Upload files directly instead of copy-pasting large texts.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 DevToolKit. <span data-i18n="footer_text">All tools run locally in your browser.</span> <a href="./privacy.html" data-i18n="privacy_policy">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script>window.I18N_PAGE_ID = "_home";</script>
+  <script src="./translations.js"></script>
+  <script src="./i18n.js"></script>
+</body>
+</html>

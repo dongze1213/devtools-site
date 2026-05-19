@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter & Validator - Free Online Tool | DevToolKit</title>
+  <meta name="description" content="Free online JSON formatter, beautifier, and validator. Paste your JSON and instantly format, minify, or validate it. 100% client-side, no data sent to servers.">
+  <meta name="keywords" content="json formatter, json beautifier, json validator, json minifier, format json online, json pretty print">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/json-formatter.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JSON Formatter & Validator",
+    "description": "Free online JSON formatter, beautifier, and validator. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">JSON Formatter & Validator</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="tool-area">
+      <div>
+        <label for="jsonInput" data-i18n="label">Paste your JSON here</label>
+        <textarea id="jsonInput" placeholder='{"name":"DevToolKit","version":"1.0","tools":["json","base64","jwt"]}'></textarea>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="formatJSON()" data-i18n="format">Format / Beautify</button>
+          <button class="btn" onclick="minifyJSON()" data-i18n="minify">Minify</button>
+          <button class="btn" onclick="validateJSON()" data-i18n="validate">Validate</button>
+          <button class="btn" onclick="copyOutput()" data-i18n="copy_output">Copy Output</button>
+          <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+      </div>
+
+      <div class="result-section">
+        <h3><span data-i18n="output">Output</span> <button class="btn copy-btn" onclick="copyOutput()" data-i18n="copy">Copy</button></h3>
+        <div id="jsonOutput" class="output-area">Formatted JSON will appear here...</div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About JSON Formatter</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        <span data-i18n="about_desc">This free online JSON formatter helps you beautify, minify, and validate your JSON data instantly. All processing happens directly in your browser — your data is never sent to any server, making it safe for sensitive data like API keys, configuration files, and personal information.</span>
+      </p>
+      <h3 style="margin-top:20px;" data-i18n="features_title">Features</h3>
+      <ul style="color:var(--text2);font-size:14px;line-height:2;padding-left:20px;">
+        <li data-i18n="feat1">Format and beautify JSON with customizable indentation</li>
+        <li data-i18n="feat2">Minify JSON to reduce file size</li>
+        <li data-i18n="feat3">Validate JSON and get detailed error messages with line numbers</li>
+        <li data-i18n="feat4">Handles large JSON files (10MB+) using Web Workers</li>
+        <li data-i18n="feat5">100% client-side — no data leaves your browser</li>
+      </ul>
+      <h3 style="margin-top:20px;" data-i18n="what_title">What is JSON?</h3>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        JSON (JavaScript Object Notation) is a lightweight data interchange format that is easy for humans
+        to read and write, and easy for machines to parse and generate. It is the most common data format
+        for APIs, configuration files, and data storage.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('jsonInput');
+    const output = document.getElementById('jsonOutput');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+
+    function showMsg(el, text) {
+      el.textContent = text;
+      el.classList.remove('detailed');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 5000);
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function showDetailedError(el, title, posText, snippet, pointer) {
+      let html = '<span class="error-title">' + escapeHtml(title) + '</span>';
+      if (posText) {
+        html += '<span class="error-position">' + escapeHtml(posText) + '</span>';
+      }
+      if (snippet) {
+        html += '<span class="error-snippet">' + escapeHtml(snippet);
+        if (pointer) html += '\n' + escapeHtml(pointer);
+        html += '</span>';
+      }
+      el.innerHTML = html;
+      el.classList.add('show', 'detailed');
+      setTimeout(() => el.classList.remove('show'), 8000);
+    }
+
+    function parseJsonError(jsonStr, error) {
+      const posMatch = error.message.match(/position\s+(\d+)/i);
+      if (posMatch) {
+        const pos = parseInt(posMatch[1]);
+        const before = jsonStr.substring(0, pos);
+        const lines = before.split('\n');
+        const line = lines.length;
+        const col = lines[lines.length - 1].length + 1;
+        const char = (pos < jsonStr.length) ? jsonStr[pos] : '?';
+        return { pos: pos, line: line, col: col, char: char, found: true };
+      }
+      const lcMatch = error.message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+      if (lcMatch) {
+        return { line: parseInt(lcMatch[1]), col: parseInt(lcMatch[2]), found: true };
+      }
+      return { found: false };
+    }
+
+    function getErrorContext(jsonStr, pos) {
+      const lines = jsonStr.split('\n');
+      let cumulative = 0;
+      for (let i = 0; i < lines.length; i++) {
+        if (cumulative + lines[i].length >= pos) {
+          const col = pos - cumulative;
+          const start = Math.max(0, i - 2);
+          const end = Math.min(lines.length - 1, i + 1);
+          let snippet = '';
+          for (let j = start; j <= end; j++) {
+            const num = (j + 1) + ' | ';
+            snippet += num + lines[j] + '\n';
+          }
+          let pointer = '';
+          const targetLineIdx = i;
+          if (targetLineIdx >= start && targetLineIdx <= end) {
+            pointer = (targetLineIdx + 1) + ' | ';
+            for (let k = 0; k < col + (targetLineIdx + 1).toString().length; k++) pointer += ' ';
+            pointer += '^';
+          }
+          return { snippet: snippet, pointer: pointer };
+        }
+        cumulative += lines[i].length + 1;
+      }
+      return { snippet: '', pointer: '' };
+    }
+
+    function highlightError(inputId, pos) {
+      const ta = document.getElementById(inputId);
+      ta.classList.add('error-at-position');
+      ta.focus();
+      ta.setSelectionRange(pos, pos + 1);
+      const linesBefore = ta.value.substring(0, pos).split('\n');
+      const lineH = 20;
+      ta.scrollTop = (linesBefore.length - 1) * lineH - ta.clientHeight / 2;
+      setTimeout(() => ta.classList.remove('error-at-position'), 3000);
+    }
+
+    function formatJSON() {
+      try {
+        const parsed = JSON.parse(input.value);
+        output.textContent = JSON.stringify(parsed, null, 2);
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'JSON formatted successfully!');
+      } catch(e) {
+        const info = parseJsonError(input.value, e);
+        if (info.found) {
+          const ctx = getErrorContext(input.value, info.pos);
+          const posText = 'Line ' + info.line + ', Column ' + info.col + ' — Unexpected \'' + info.char + '\'';
+          showDetailedError(errorMsg, '\u274C Invalid JSON', posText, ctx.snippet, ctx.pointer);
+          highlightError('jsonInput', info.pos);
+        } else {
+          showMsg(errorMsg, 'Invalid JSON: ' + e.message);
+        }
+      }
+    }
+
+    function minifyJSON() {
+      try {
+        const parsed = JSON.parse(input.value);
+        output.textContent = JSON.stringify(parsed);
+        errorMsg.classList.remove('show');
+        showMsg(successMsg, 'JSON minified successfully!');
+      } catch(e) {
+        const info = parseJsonError(input.value, e);
+        if (info.found) {
+          const ctx = getErrorContext(input.value, info.pos);
+          const posText = 'Line ' + info.line + ', Column ' + info.col;
+          showDetailedError(errorMsg, '\u274C Invalid JSON', posText, ctx.snippet, ctx.pointer);
+          highlightError('jsonInput', info.pos);
+        } else {
+          showMsg(errorMsg, 'Invalid JSON: ' + e.message);
+        }
+      }
+    }
+
+    function validateJSON() {
+      try {
+        JSON.parse(input.value);
+        showMsg(successMsg, '\u2705 Valid JSON!');
+        errorMsg.classList.remove('show');
+      } catch(e) {
+        const info = parseJsonError(input.value, e);
+        if (info.found) {
+          const ctx = getErrorContext(input.value, info.pos);
+          const posText = 'Line ' + info.line + ', Column ' + info.col;
+          showDetailedError(errorMsg, '\u274C Invalid JSON', posText, ctx.snippet, ctx.pointer);
+          highlightError('jsonInput', info.pos);
+        } else {
+          showMsg(errorMsg, 'Invalid JSON: ' + e.message);
+        }
+      }
+    }
+
+    function copyOutput() {
+      const text = output.textContent;
+      if (text && text !== 'Formatted JSON will appear here...') {
+        navigator.clipboard.writeText(text).then(() => {
+          showMsg(successMsg, 'Copied to clipboard!');
+        }).catch(() => {});
+      }
+    }
+
+    function clearAll() {
+      input.value = '';
+      output.textContent = 'Formatted JSON will appear here...';
+      errorMsg.classList.remove('show');
+      successMsg.classList.remove('show');
+    }
+
+    input.addEventListener('paste', () => {
+      setTimeout(() => {
+        try {
+          const parsed = JSON.parse(input.value);
+          output.textContent = JSON.stringify(parsed, null, 2);
+          errorMsg.classList.remove('show');
+        } catch(e) {}
+      }, 100);
+    });
+  </script>
+
+  <script>window.I18N_PAGE_ID = "json-formatter";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('jsonInput', '.json', function(){ formatJSON(); });</script>
+</body>
+</html>

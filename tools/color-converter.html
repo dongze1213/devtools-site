@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Converter - HEX RGB HSL Tailwind | DevToolKit</title>
+  <meta name="description" content="Free online color converter. Convert colors between HEX, RGB, HSL, and Tailwind CSS classes. Pick colors and get all format values instantly.">
+  <meta name="keywords" content="color converter, hex to rgb, rgb to hex, hsl converter, tailwind color, color picker, css color">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/color-converter.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">Color Converter</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;">
+      <div>
+        <label for="colorPicker">Pick a color</label>
+        <input type="color" id="colorPicker" value="#3b82f6" style="width:80px;height:44px;border:none;cursor:pointer;border-radius:8px;">
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <label for="hexInput">HEX value</label>
+        <input type="text" id="hexInput" value="#3b82f6" oninput="fromHex(this.value)">
+      </div>
+    </div>
+
+    <div id="colorPreview" class="color-preview" style="background:#3b82f6;"></div>
+
+    <div class="color-values">
+      <div class="color-value-item">
+        <label>HEX</label>
+        <code id="valHex">#3b82f6</code>
+        <button class="btn" style="font-size:11px;padding:2px 8px;margin-top:4px;" onclick="copyVal('valHex')">Copy</button>
+      </div>
+      <div class="color-value-item">
+        <label>RGB</label>
+        <code id="valRgb">rgb(59, 130, 246)</code>
+        <button class="btn" style="font-size:11px;padding:2px 8px;margin-top:4px;" onclick="copyVal('valRgb')">Copy</button>
+      </div>
+      <div class="color-value-item">
+        <label>HSL</label>
+        <code id="valHsl">hsl(217, 91%, 60%)</code>
+        <button class="btn" style="font-size:11px;padding:2px 8px;margin-top:4px;" onclick="copyVal('valHsl')">Copy</button>
+      </div>
+      <div class="color-value-item">
+        <label>Tailwind CSS</label>
+        <code id="valTw">blue-500</code>
+        <button class="btn" style="font-size:11px;padding:2px 8px;margin-top:4px;" onclick="copyVal('valTw')">Copy</button>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About Color Conversion</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        Convert colors between HEX, RGB, HSL formats and find the closest Tailwind CSS class.
+        This tool processes everything locally in your browser. Pick a color using the color picker
+        or enter a HEX value directly.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    const TW_COLORS = {
+      'slate-50':'#f8fafc','slate-100':'#f1f5f9','slate-200':'#e2e8f0','slate-300':'#cbd5e1','slate-400':'#94a3b8','slate-500':'#64748b','slate-600':'#475569','slate-700':'#334155','slate-800':'#1e293b','slate-900':'#0f172a',
+      'gray-50':'#f9fafb','gray-100':'#f3f4f6','gray-200':'#e5e7eb','gray-300':'#d1d5db','gray-400':'#9ca3af','gray-500':'#6b7280','gray-600':'#4b5563','gray-700':'#374151','gray-800':'#1f2937','gray-900':'#111827',
+      'red-50':'#fef2f2','red-100':'#fee2e2','red-200':'#fecaca','red-300':'#fca5a5','red-400':'#f87171','red-500':'#ef4444','red-600':'#dc2626','red-700':'#b91c1c','red-800':'#991b1b','red-900':'#7f1d1d',
+      'blue-50':'#eff6ff','blue-100':'#dbeafe','blue-200':'#bfdbfe','blue-300':'#93c5fd','blue-400':'#60a5fa','blue-500':'#3b82f6','blue-600':'#2563eb','blue-700':'#1d4ed8','blue-800':'#1e40af','blue-900':'#1e3a8a',
+      'green-50':'#f0fdf4','green-100':'#dcfce7','green-200':'#bbf7d0','green-300':'#86efac','green-400':'#4ade80','green-500':'#22c55e','green-600':'#16a34a','green-700':'#15803d','green-800':'#166534','green-900':'#14532d',
+      'yellow-50':'#fefce8','yellow-100':'#fef9c3','yellow-200':'#fef08a','yellow-300':'#fde047','yellow-400':'#facc15','yellow-500':'#eab308','yellow-600':'#ca8a04','yellow-700':'#a16207','yellow-800':'#854d0e','yellow-900':'#713f12',
+      'purple-50':'#faf5ff','purple-100':'#f3e8ff','purple-200':'#e9d5ff','purple-300':'#d8b4fe','purple-400':'#c084fc','purple-500':'#a855f7','purple-600':'#9333ea','purple-700':'#7e22ce','purple-800':'#6b21a8','purple-900':'#581c87',
+      'orange-50':'#fff7ed','orange-100':'#ffedd5','orange-200':'#fed7aa','orange-300':'#fdba74','orange-400':'#fb923c','orange-500':'#f97316','orange-600':'#ea580c','orange-700':'#c2410c','orange-800':'#9a3412','orange-900':'#7c2d12',
+    };
+
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      return { r: parseInt(hex.substr(0,2),16), g: parseInt(hex.substr(2,2),16), b: parseInt(hex.substr(4,2),16) };
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      let h, s, l = (max+min)/2;
+      if (max === min) { h = s = 0; }
+      else {
+        const d = max - min;
+        s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+        switch(max) {
+          case r: h = ((g-b)/d + (g<b?6:0))/6; break;
+          case g: h = ((b-r)/d + 2)/6; break;
+          case b: h = ((r-g)/d + 4)/6; break;
+        }
+      }
+      return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) };
+    }
+
+    function colorDist(hex1, hex2) {
+      const c1 = hexToRgb(hex1), c2 = hexToRgb(hex2);
+      return Math.sqrt((c1.r-c2.r)**2 + (c1.g-c2.g)**2 + (c1.b-c2.b)**2);
+    }
+
+    function findTailwind(hex) {
+      let closest = '', minDist = Infinity;
+      for (const [name, value] of Object.entries(TW_COLORS)) {
+        const d = colorDist(hex, value);
+        if (d < minDist) { minDist = d; closest = name; }
+      }
+      return closest;
+    }
+
+    function updateAll(hex) {
+      if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return;
+      const rgb = hexToRgb(hex);
+      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+      document.getElementById('colorPreview').style.background = hex;
+      document.getElementById('valHex').textContent = hex;
+      document.getElementById('valRgb').textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      document.getElementById('valHsl').textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+      document.getElementById('valTw').textContent = findTailwind(hex);
+    }
+
+    document.getElementById('colorPicker').addEventListener('input', e => {
+      document.getElementById('hexInput').value = e.target.value;
+      updateAll(e.target.value);
+    });
+
+    function fromHex(val) { updateAll(val); document.getElementById('colorPicker').value = val; }
+    function copyVal(id) { navigator.clipboard.writeText(document.getElementById(id).textContent).catch(() => {}); }
+  </script>
+
+  <script>window.I18N_PAGE_ID = "color-converter";</script>
+  <script src="../translations.js"></script>
+  <script src="../i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT Decoder - Decode JSON Web Tokens Free | DevToolKit</title>
+  <meta name="description" content="Free online JWT decoder. Inspect JSON Web Token header, payload, and signature instantly. 100% client-side — your tokens are never sent to any server.">
+  <meta name="keywords" content="jwt decoder, decode jwt, jwt inspector, json web token decoder, jwt validator, jwt parser">
+  <link rel="canonical" href="https://devtoolkit.vercel.app/tools/jwt-decoder.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>DevToolKit</span></a>
+      <nav class="nav"><a href="../index.html" data-i18n="all_tools">All Tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container tool-page">
+    <div class="tool-header">
+      <a href="../index.html" class="back-link" data-i18n="back">← Back</a>
+      <h1 data-i18n="title">JWT Decoder</h1>
+      <div class="privacy-note" data-i18n="local_processing">🔒 100% Local Processing</div>
+    </div>
+
+    <div class="tool-area">
+      <div>
+        <label for="jwtInput" data-i18n="label">Paste your JWT token</label>
+        <textarea id="jwtInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" style="min-height:100px;"></textarea>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="decodeJWT()" data-i18n="decode">Decode</button>
+          <button class="btn" onclick="clearAll()" data-i18n="clear">Clear</button>
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+      </div>
+
+      <div id="jwtResult" style="display:none;">
+        <div class="jwt-section">
+          <h3 style="color:var(--red);">Header <button class="btn copy-btn" onclick="copySection('header')">Copy</button></h3>
+          <pre id="jwtHeader"></pre>
+        </div>
+        <div class="jwt-section" style="margin-top:12px;">
+          <h3 style="color:var(--green);">Payload <button class="btn copy-btn" onclick="copySection('payload')">Copy</button></h3>
+          <pre id="jwtPayload"></pre>
+        </div>
+        <div class="jwt-section" style="margin-top:12px;">
+          <h3 style="color:var(--yellow);">Signature</h3>
+          <pre id="jwtSignature" style="color:var(--text3);"></pre>
+        </div>
+      </div>
+    </div>
+
+    <section style="margin-top:48px;">
+      <h2 data-i18n="about_title">About JWT (JSON Web Tokens)</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.8;">
+        JSON Web Tokens (JWT) are an open standard (RFC 7519) for securely transmitting information between
+        parties as a JSON object. A JWT consists of three parts separated by dots: <strong>Header</strong>,
+        <strong>Payload</strong>, and <strong>Signature</strong>. This tool decodes the header and payload
+        without verifying the signature. Your tokens are processed entirely in your browser and never sent
+        to any server.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('jwtInput');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+
+    function showMsg(el, text) {
+      el.textContent = text; el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function b64UrlDecode(str) {
+      str = str.replace(/-/g, '+').replace(/_/g, '/');
+      while (str.length % 4) str += '=';
+      return decodeURIComponent(atob(str).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+    }
+
+    // ── 工具函数 ────────────────────────────────────────────
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function clearErrorHighlight() {
+      input.classList.remove('error-at-position');
+    }
+
+    // 高亮 JWT 的某个分段
+    function highlightJWTSegment(segmentIndex) {
+      const token = input.value.trim();
+      const dotIndices = [];
+      for (let i = 0; i < token.length; i++) {
+        if (token[i] === '.') dotIndices.push(i);
+      }
+      let start, end;
+      if (segmentIndex === 0) {
+        start = 0;
+        end = dotIndices[0] !== undefined ? dotIndices[0] : token.length;
+      } else if (segmentIndex === 1) {
+        start = dotIndices[0] + 1;
+        end = dotIndices[1] !== undefined ? dotIndices[1] : token.length;
+      } else {
+        start = dotIndices[1] + 1;
+        end = token.length;
+      }
+      input.classList.add('error-at-position');
+      input.focus();
+      input.setSelectionRange(start, end);
+    }
+
+    // 解析 JSON 错误位置（兼容 Chrome/Firefox）
+    function parseJsonError(jsonStr, error) {
+      const posMatch = error.message.match(/position\s+(\d+)/i);
+      if (posMatch) {
+        const pos = parseInt(posMatch[1]);
+        const before = jsonStr.substring(0, pos);
+        const lines = before.split('\n');
+        const line = lines.length;
+        const col = lines[lines.length - 1].length + 1;
+        const char = (pos < jsonStr.length) ? jsonStr[pos] : 'EOF';
+        return { pos, line, col, char, found: true };
+      }
+      const lineMatch = error.message.match(/line\s+(\d+)\s+column\s+(\d+)/i);
+      if (lineMatch) {
+        return { pos: -1, line: parseInt(lineMatch[1]), col: parseInt(lineMatch[2]), char: '', found: true };
+      }
+      return { pos: -1, line: -1, col: -1, char: '', found: false };
+    }
+
+    // 生成错误上下文代码片段
+    function getErrorContext(jsonStr, pos) {
+      const lines = jsonStr.split('\n');
+      const before = jsonStr.substring(0, pos);
+      const lineIdx = before.split('\n').length - 1;
+      const start = Math.max(0, lineIdx - 2);
+      const end = Math.min(lines.length, lineIdx + 3);
+      let snippet = '';
+      for (let i = start; i < end; i++) {
+        const num = String(i + 1).padStart(3, ' ');
+        snippet += num + ' │ ' + lines[i] + '\n';
+      }
+      const colInLine = pos - (lineIdx > 0 ? jsonStr.substring(0, pos).lastIndexOf('\n') + 1 : 0);
+      let pointer = '     ' + ' '.repeat(3) + ' '.repeat(colInLine) + '^';
+      return { snippet, pointer };
+    }
+
+    // 显示详细错误信息（带代码上下文）
+    function showDetailedError(el, title, posText, snippet, pointer) {
+      let html = '<span class="error-title">' + title + '</span>';
+      if (posText) {
+        html += '<span class="error-position">' + posText + '</span>';
+      }
+      if (snippet) {
+        html += '<span class="error-snippet">' + escapeHtml(snippet) + '\n' + (pointer || '') + '</span>';
+      }
+      el.innerHTML = html;
+      el.classList.add('show', 'detailed');
+    }
+
+    // ── 主解码函数（增强报错）────────────────────────────────
+    function decodeJWT() {
+      clearErrorHighlight();
+      errorMsg.classList.remove('show', 'detailed');
+      document.getElementById('jwtResult').style.display = 'none';
+
+      const token = input.value.trim();
+      if (!token) {
+        showDetailedError(errorMsg, 'Token is empty', '', '', '');
+        input.classList.add('error-at-position');
+        input.focus();
+        return;
+      }
+
+      const parts = token.split('.');
+
+      // 检查分段数量
+      if (parts.length !== 3) {
+        let dotCount = parts.length - 1;
+        let msg = 'JWT 必须有且仅有 3 个分段（由 2 个 "." 分隔）。';
+        msg += ' 当前检测到 ' + parts.length + ' 个分段（' + dotCount + ' 个分隔符）。';
+        if (dotCount < 2) {
+          msg += ' 请检查 Token 是否完整。';
+        } else {
+          msg += ' Token 中"."数量过多，请检查是否粘贴了多余内容。';
+        }
+        showDetailedError(errorMsg, msg, '分段数: ' + parts.length + ' / 应为: 3', '', '');
+        // 高亮第一个多余的点或整个输入
+        if (dotCount > 2) {
+          const thirdDot = token.indexOf('.', token.indexOf('.') + 1);
+          const fourthDot = token.indexOf('.', thirdDot + 1);
+          input.classList.add('error-at-position');
+          input.focus();
+          input.setSelectionRange(fourthDot, fourthDot + 1);
+        }
+        return;
+      }
+
+      // 逐段解码并报告精确错误
+      const segmentNames = ['Header（头）', 'Payload（载荷）', 'Signature（签名）'];
+      const segmentKeys = ['jwtHeader', 'jwtPayload', 'jwtSignature'];
+
+      for (let i = 0; i < 3; i++) {
+        const seg = parts[i];
+
+        // 检查空分段
+        if (!seg) {
+          showDetailedError(errorMsg,
+            '第 ' + (i+1) + ' 段（' + segmentNames[i] + '）为空',
+            '位置: 第 ' + (i+1) + ' 段为空字符串', '', '');
+          highlightJWTSegment(i);
+          return;
+        }
+
+        // 尝试 Base64URL 解码
+        let decoded;
+        try {
+          decoded = b64UrlDecode(seg);
+        } catch(e) {
+          showDetailedError(errorMsg,
+            '第 ' + (i+1) + ' 段（' + segmentNames[i] + '）Base64URL 解码失败',
+            '原因: 包含非法 Base64URL 字符。合法字符为 A-Z, a-z, 0-9, "-", "_"',
+            '分段内容: ' + seg.substring(0, 60) + (seg.length > 60 ? '...' : ''), '');
+          highlightJWTSegment(i);
+          return;
+        }
+
+        // Header 和 Payload 必须是合法 JSON
+        if (i < 2) {
+          try {
+            JSON.parse(decoded);
+          } catch(e) {
+            const errInfo = parseJsonError(decoded, e);
+            let posText = '';
+            let snippet = '';
+            let pointer = '';
+            if (errInfo.found) {
+              posText = '第 ' + (i+1) + ' 段 JSON 错误位置: 第 ' + errInfo.line + ' 行, 第 ' + errInfo.col + ' 列';
+              if (errInfo.char && errInfo.char !== 'EOF') {
+                posText += '（附近字符: "' + escapeHtml(errInfo.char) + '"）';
+              }
+              const ctx = getErrorContext(decoded, errInfo.pos);
+              snippet = ctx.snippet;
+              pointer = ctx.pointer;
+            } else {
+              posText = '第 ' + (i+1) + ' 段不是合法 JSON: ' + e.message;
+            }
+            showDetailedError(errorMsg,
+              '第 ' + (i+1) + ' 段（' + segmentNames[i] + '）JSON 解析失败',
+              posText, snippet, pointer);
+            highlightJWTSegment(i);
+            return;
+          }
+        }
+      }
+
+      // 所有检查通过，正常显示结果
+      try {
+        const header = JSON.parse(b64UrlDecode(parts[0]));
+        const payload = JSON.parse(b64UrlDecode(parts[1]));
+
+        let headerStr = JSON.stringify(header, null, 2);
+        let payloadStr = JSON.stringify(payload, null, 2);
+
+        document.getElementById('jwtHeader').textContent = headerStr;
+        document.getElementById('jwtPayload').textContent = payloadStr;
+        document.getElementById('jwtSignature').textContent = parts[2];
+
+        // 添加时间字段说明
+        let notes = '';
+        if (payload.exp) {
+          notes += '\n// exp（过期时间 ExpiresAt）: ' + new Date(payload.exp * 1000).toISOString();
+        }
+        if (payload.iat) {
+          notes += '\n// iat（签发时间 IssuedAt）: ' + new Date(payload.iat * 1000).toISOString();
+        }
+        if (payload.nbf) {
+          notes += '\n// nbf（生效时间 NotBefore）: ' + new Date(payload.nbf * 1000).toISOString();
+        }
+        if (notes) {
+          document.getElementById('jwtPayload').textContent += '\n' + notes;
+        }
+
+        document.getElementById('jwtResult').style.display = 'block';
+        errorMsg.classList.remove('show', 'detailed');
+        showMsg(successMsg, 'JWT 解码成功！');
+      } catch(e) {
+        showDetailedError(errorMsg, '解码结果处理异常: ' + e.message, '', '', '');
+      }
+    }
+
+    function copySection(section) {
+      const el = document.getElementById(section === 'header' ? 'jwtHeader' : 'jwtPayload');
+      navigator.clipboard.writeText(el.textContent).then(() => showMsg(successMsg, '已复制！')).catch(() => {});
+    }
+
+    function clearAll() {
+      input.value = '';
+      document.getElementById('jwtResult').style.display = 'none';
+      errorMsg.classList.remove('show', 'detailed');
+      successMsg.classList.remove('show');
+      clearErrorHighlight();
+    }
+
+    // Auto-decode on paste
+    input.addEventListener('paste', () => setTimeout(decodeJWT, 100));
+  </script>
+
+  <script>window.I18N_PAGE_ID = "jwt-decoder";</script>
+  <script src="../translations.js"></script>
+  <script src="../file-upload.js"></script>
+  <script src="../i18n.js"></script>
+  <script>setupFileUpload('jwtInput', '.txt', function(){ decodeJWT(); });</script>
+</body>
+</html>
