@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is the difference between MD5 and SHA-256?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "SHA-256 (part of SHA-2 family) is cryptographically secure and produces a 256-bit hash. MD5 is 128-bit and cryptographically broken — do not use it for security. SHA-256 is the recommended standard."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Is SHA-1 still safe to use?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. SHA-1 has been broken since 2017 and should not be used for security purposes. Always use SHA-256 or SHA-512 for password hashing, file integrity, and digital signatures."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Can a hash be reversed?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Cryptographic hashes are one-way functions. You cannot \"decode\" a hash back to its original input. For password verification, hash the input and compare hashes — never decrypt or reverse a hash."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What is salting and why is it important?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Salting adds random data to each input before hashing so identical inputs produce different hashes. This prevents rainbow table attacks. Our tool generates raw hashes — add your own salt for production use."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -100,6 +141,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>Hash Generator FAQ</h2>
+      <h3 data-i18n="faq_q1">What is the difference between MD5 and SHA-256?</h3>
+      <p data-i18n="faq_a1">SHA-256 (part of SHA-2 family) is cryptographically secure and produces a 256-bit hash. MD5 is 128-bit and cryptographically broken — do not use it for security. SHA-256 is the recommended standard.</p>
+      <h3 data-i18n="faq_q2">Is SHA-1 still safe to use?</h3>
+      <p data-i18n="faq_a2">No. SHA-1 has been broken since 2017 and should not be used for security purposes. Always use SHA-256 or SHA-512 for password hashing, file integrity, and digital signatures.</p>
+      <h3 data-i18n="faq_q3">Can a hash be reversed?</h3>
+      <p data-i18n="faq_a3">No. Cryptographic hashes are one-way functions. You cannot "decode" a hash back to its original input. For password verification, hash the input and compare hashes — never decrypt or reverse a hash.</p>
+      <h3 data-i18n="faq_q4">What is salting and why is it important?</h3>
+      <p data-i18n="faq_a4">Salting adds random data to each input before hashing so identical inputs produce different hashes. This prevents rainbow table attacks. Our tool generates raw hashes — add your own salt for production use.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

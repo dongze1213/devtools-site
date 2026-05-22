@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is a JWT token?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "JWT (JSON Web Token) is a compact, URL-safe way to transmit claims between parties. It has three parts: Header, Payload, and Signature — each Base64-encoded and separated by dots."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Can I verify JWT signatures here?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Our tool decodes the header and payload for inspection, but does not verify the cryptographic signature. For verification, you need the secret key or public key, which should remain private."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Is it safe to decode a JWT online?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, all decoding happens in your browser. Your JWT tokens are never sent to any server. However, only decode tokens on trusted devices and never share tokens that contain sensitive claims."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Why does my JWT contain personal data?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "JWTs often carry user identity claims (sub, email, name). Avoid storing sensitive information in JWT payloads because the payload is only Base64-encoded (not encrypted) and can be read by anyone with the token."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -92,6 +133,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>JWT Decoder FAQ</h2>
+      <h3 data-i18n="faq_q1">What is a JWT token?</h3>
+      <p data-i18n="faq_a1">JWT (JSON Web Token) is a compact, URL-safe way to transmit claims between parties. It has three parts: Header, Payload, and Signature — each Base64-encoded and separated by dots.</p>
+      <h3 data-i18n="faq_q2">Can I verify JWT signatures here?</h3>
+      <p data-i18n="faq_a2">Our tool decodes the header and payload for inspection, but does not verify the cryptographic signature. For verification, you need the secret key or public key, which should remain private.</p>
+      <h3 data-i18n="faq_q3">Is it safe to decode a JWT online?</h3>
+      <p data-i18n="faq_a3">Yes, all decoding happens in your browser. Your JWT tokens are never sent to any server. However, only decode tokens on trusted devices and never share tokens that contain sensitive claims.</p>
+      <h3 data-i18n="faq_q4">Why does my JWT contain personal data?</h3>
+      <p data-i18n="faq_a4">JWTs often carry user identity claims (sub, email, name). Avoid storing sensitive information in JWT payloads because the payload is only Base64-encoded (not encrypted) and can be read by anyone with the token.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

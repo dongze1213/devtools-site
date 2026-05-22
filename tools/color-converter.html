@@ -32,6 +32,39 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "How do I convert HEX to RGB?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Enter a HEX color code (like #3B82F6) and the tool instantly shows the equivalent RGB values. HEX #3B82F6 = RGB(59, 130, 246). Each pair of HEX digits represents one color channel."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What is the difference between RGB and HSL?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "RGB defines colors by red, green, blue intensity (0-255). HSL uses Hue (color wheel degrees), Saturation (vividness %), and Lightness (brightness %). HSL is often more intuitive for designers to adjust."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Can I pick colors visually?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Use the built-in color picker to select any color and see its values in all formats. This is faster than typing codes manually and helps explore color variations."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -98,6 +131,18 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>Color Converter FAQ</h2>
+      <h3 data-i18n="faq_q1">How do I convert HEX to RGB?</h3>
+      <p data-i18n="faq_a1">Enter a HEX color code (like #3B82F6) and the tool instantly shows the equivalent RGB values. HEX #3B82F6 = RGB(59, 130, 246). Each pair of HEX digits represents one color channel.</p>
+      <h3 data-i18n="faq_q2">What is the difference between RGB and HSL?</h3>
+      <p data-i18n="faq_a2">RGB defines colors by red, green, blue intensity (0-255). HSL uses Hue (color wheel degrees), Saturation (vividness %), and Lightness (brightness %). HSL is often more intuitive for designers to adjust.</p>
+      <h3 data-i18n="faq_q3">Can I pick colors visually?</h3>
+      <p data-i18n="faq_a3">Yes. Use the built-in color picker to select any color and see its values in all formats. This is faster than typing codes manually and helps explore color variations.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

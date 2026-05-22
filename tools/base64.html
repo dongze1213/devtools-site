@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is Base64 encoding?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Base64 is a binary-to-text encoding scheme that converts binary data into ASCII characters. It uses 64 characters (A-Z, a-z, 0-9, +, /) to represent any data, making it safe for text-based protocols like email, JSON, and URLs."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "How do I decode a Base64 string?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Paste your Base64-encoded string and click \"Decode\" to see the original text. Paste plain text and click \"Encode\" to convert it to Base64. Our tool handles both directions instantly in your browser."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Is Base64 encryption?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No! Base64 is encoding, not encryption. It provides zero security — anyone can decode a Base64 string. Use proper encryption (like AES) for sensitive data protection."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Can I encode images to Base64?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Drag an image file onto the tool to get its Base64 data URI, which can be embedded directly in HTML img tags or CSS backgrounds. Useful for small icons and inline assets."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -83,6 +124,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>Base64 Encoder/Decoder FAQ</h2>
+      <h3 data-i18n="faq_q1">What is Base64 encoding?</h3>
+      <p data-i18n="faq_a1">Base64 is a binary-to-text encoding scheme that converts binary data into ASCII characters. It uses 64 characters (A-Z, a-z, 0-9, +, /) to represent any data, making it safe for text-based protocols like email, JSON, and URLs.</p>
+      <h3 data-i18n="faq_q2">How do I decode a Base64 string?</h3>
+      <p data-i18n="faq_a2">Paste your Base64-encoded string and click "Decode" to see the original text. Paste plain text and click "Encode" to convert it to Base64. Our tool handles both directions instantly in your browser.</p>
+      <h3 data-i18n="faq_q3">Is Base64 encryption?</h3>
+      <p data-i18n="faq_a3">No! Base64 is encoding, not encryption. It provides zero security — anyone can decode a Base64 string. Use proper encryption (like AES) for sensitive data protection.</p>
+      <h3 data-i18n="faq_q4">Can I encode images to Base64?</h3>
+      <p data-i18n="faq_a4">Yes. Drag an image file onto the tool to get its Base64 data URI, which can be embedded directly in HTML img tags or CSS backgrounds. Useful for small icons and inline assets.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

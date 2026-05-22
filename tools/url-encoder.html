@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is URL encoding?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "URL encoding (percent-encoding) converts special characters into a format safe for URLs. Spaces become %20, question marks become %3F, and other reserved characters get percent-encoded. This ensures URLs work correctly in all browsers and APIs."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "When should I encode a URL?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Encode URLs that contain spaces, non-ASCII characters (Chinese, emoji), or reserved characters (&, ?, =, #). Always encode query parameter values before appending them to a URL."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What is the difference between encodeURI and encodeURIComponent?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "encodeURI preserves URL structure characters like / ? & = #. encodeURIComponent encodes everything, including those reserved characters. Use encodeURIComponent for individual query parameter values."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Why do I see %20 in URLs?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "%20 is the encoded form of a space character in URLs. Spaces are not allowed in URLs, so they must be encoded as %20 (or sometimes + in query strings)."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -89,6 +130,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>URL Encoder/Decoder FAQ</h2>
+      <h3 data-i18n="faq_q1">What is URL encoding?</h3>
+      <p data-i18n="faq_a1">URL encoding (percent-encoding) converts special characters into a format safe for URLs. Spaces become %20, question marks become %3F, and other reserved characters get percent-encoded. This ensures URLs work correctly in all browsers and APIs.</p>
+      <h3 data-i18n="faq_q2">When should I encode a URL?</h3>
+      <p data-i18n="faq_a2">Encode URLs that contain spaces, non-ASCII characters (Chinese, emoji), or reserved characters (&, ?, =, #). Always encode query parameter values before appending them to a URL.</p>
+      <h3 data-i18n="faq_q3">What is the difference between encodeURI and encodeURIComponent?</h3>
+      <p data-i18n="faq_a3">encodeURI preserves URL structure characters like / ? & = #. encodeURIComponent encodes everything, including those reserved characters. Use encodeURIComponent for individual query parameter values.</p>
+      <h3 data-i18n="faq_q4">Why do I see %20 in URLs?</h3>
+      <p data-i18n="faq_a4">%20 is the encoded form of a space character in URLs. Spaces are not allowed in URLs, so they must be encoded as %20 (or sometimes + in query strings).</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

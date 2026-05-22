@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is a Unix timestamp?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A Unix timestamp is the number of seconds (or milliseconds) since January 1, 1970 (UTC), known as the Unix epoch. It is a standardized way to represent time across systems regardless of timezone."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "How do I convert epoch time to a date?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Enter the Unix timestamp (in seconds or milliseconds) into our converter and it instantly shows the human-readable date and time. You can also convert dates back to timestamps."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What timezone are Unix timestamps in?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Unix timestamps are always in UTC (Coordinated Universal Time). They are timezone-independent, making them ideal for database storage and API communication. Convert to your local timezone for display."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Should I use seconds or milliseconds?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "JavaScript uses milliseconds, while most Unix systems use seconds. Our tool detects the magnitude automatically and supports both formats. A timestamp of 14-digit is milliseconds; 10-digit is seconds."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -94,6 +135,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>Timestamp Converter FAQ</h2>
+      <h3 data-i18n="faq_q1">What is a Unix timestamp?</h3>
+      <p data-i18n="faq_a1">A Unix timestamp is the number of seconds (or milliseconds) since January 1, 1970 (UTC), known as the Unix epoch. It is a standardized way to represent time across systems regardless of timezone.</p>
+      <h3 data-i18n="faq_q2">How do I convert epoch time to a date?</h3>
+      <p data-i18n="faq_a2">Enter the Unix timestamp (in seconds or milliseconds) into our converter and it instantly shows the human-readable date and time. You can also convert dates back to timestamps.</p>
+      <h3 data-i18n="faq_q3">What timezone are Unix timestamps in?</h3>
+      <p data-i18n="faq_a3">Unix timestamps are always in UTC (Coordinated Universal Time). They are timezone-independent, making them ideal for database storage and API communication. Convert to your local timezone for display.</p>
+      <h3 data-i18n="faq_q4">Should I use seconds or milliseconds?</h3>
+      <p data-i18n="faq_a4">JavaScript uses milliseconds, while most Unix systems use seconds. Our tool detects the magnitude automatically and supports both formats. A timestamp of 14-digit is milliseconds; 10-digit is seconds.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

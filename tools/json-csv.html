@@ -32,6 +32,39 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "How do I convert JSON to CSV?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Paste your JSON array into the input area and click \"JSON to CSV\". The tool extracts column headers from object keys and maps each object to a CSV row. Use \"CSV to JSON\" to reverse the process."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What if my JSON has nested objects?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Our converter handles nested objects by flattening them with dot notation (e.g., address.city). Arrays within objects are converted to JSON strings. Complex nesting may require manual preprocessing for optimal CSV output."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Why use CSV instead of JSON?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "CSV is universally supported by Excel, Google Sheets, and database import tools. JSON is better for APIs and programming. Convert between formats based on your use case — JSON for code, CSV for spreadsheets."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -86,6 +119,18 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>JSON to CSV Converter FAQ</h2>
+      <h3 data-i18n="faq_q1">How do I convert JSON to CSV?</h3>
+      <p data-i18n="faq_a1">Paste your JSON array into the input area and click "JSON to CSV". The tool extracts column headers from object keys and maps each object to a CSV row. Use "CSV to JSON" to reverse the process.</p>
+      <h3 data-i18n="faq_q2">What if my JSON has nested objects?</h3>
+      <p data-i18n="faq_a2">Our converter handles nested objects by flattening them with dot notation (e.g., address.city). Arrays within objects are converted to JSON strings. Complex nesting may require manual preprocessing for optimal CSV output.</p>
+      <h3 data-i18n="faq_q3">Why use CSV instead of JSON?</h3>
+      <p data-i18n="faq_a3">CSV is universally supported by Excel, Google Sheets, and database import tools. JSON is better for APIs and programming. Convert between formats based on your use case — JSON for code, CSV for spreadsheets.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

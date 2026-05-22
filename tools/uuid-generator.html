@@ -32,6 +32,47 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is a UUID?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A UUID (Universally Unique Identifier) is a 128-bit number used to uniquely identify information. The chance of collision is astronomically low — even generating billions, duplicates are practically impossible."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Which UUID version should I use?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "UUID v4 (random) is the most common and suitable for most applications. UUID v1 includes timestamps and MAC addresses (less privacy). Our generator produces v4 UUIDs using cryptographically strong randomness."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "When should I use UUIDs instead of auto-increment IDs?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Use UUIDs for distributed systems, multi-database setups, client-side ID generation, and when you need IDs before database insertion. They prevent ID conflicts in decentralized environments."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "How many UUIDs can I generate at once?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Our tool supports batch generation of up to 1000 UUIDs at once. You can copy individual UUIDs or the full batch list formatted for easy use in code, spreadsheets, or API payloads."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -88,6 +129,20 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>UUID Generator FAQ</h2>
+      <h3 data-i18n="faq_q1">What is a UUID?</h3>
+      <p data-i18n="faq_a1">A UUID (Universally Unique Identifier) is a 128-bit number used to uniquely identify information. The chance of collision is astronomically low — even generating billions, duplicates are practically impossible.</p>
+      <h3 data-i18n="faq_q2">Which UUID version should I use?</h3>
+      <p data-i18n="faq_a2">UUID v4 (random) is the most common and suitable for most applications. UUID v1 includes timestamps and MAC addresses (less privacy). Our generator produces v4 UUIDs using cryptographically strong randomness.</p>
+      <h3 data-i18n="faq_q3">When should I use UUIDs instead of auto-increment IDs?</h3>
+      <p data-i18n="faq_a3">Use UUIDs for distributed systems, multi-database setups, client-side ID generation, and when you need IDs before database insertion. They prevent ID conflicts in decentralized environments.</p>
+      <h3 data-i18n="faq_q4">How many UUIDs can I generate at once?</h3>
+      <p data-i18n="faq_a4">Our tool supports batch generation of up to 1000 UUIDs at once. You can copy individual UUIDs or the full batch list formatted for easy use in code, spreadsheets, or API payloads.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

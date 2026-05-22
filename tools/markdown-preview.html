@@ -32,6 +32,39 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is Markdown?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Markdown is a lightweight markup language that formats plain text using simple symbols. `**bold**` becomes bold, `*italic*` becomes italic, and `# Heading` creates heading tags. It is widely used in documentation, README files, and content systems."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "How do I export Markdown to HTML?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Write your Markdown and see the live preview. Click \"Export HTML\" to copy the rendered HTML output. Paste it directly into your website, CMS, or email. You can also copy the raw Markdown source."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What Markdown features are supported?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Headings, bold, italic, links, images, lists, code blocks (with syntax highlighting), blockquotes, tables, horizontal rules, and inline code. Standard CommonMark features are fully supported."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -105,6 +138,18 @@ console.log(greeting);
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>Markdown Preview FAQ</h2>
+      <h3 data-i18n="faq_q1">What is Markdown?</h3>
+      <p data-i18n="faq_a1">Markdown is a lightweight markup language that formats plain text using simple symbols. `**bold**` becomes bold, `*italic*` becomes italic, and `# Heading` creates heading tags. It is widely used in documentation, README files, and content systems.</p>
+      <h3 data-i18n="faq_q2">How do I export Markdown to HTML?</h3>
+      <p data-i18n="faq_a2">Write your Markdown and see the live preview. Click "Export HTML" to copy the rendered HTML output. Paste it directly into your website, CMS, or email. You can also copy the raw Markdown source.</p>
+      <h3 data-i18n="faq_q3">What Markdown features are supported?</h3>
+      <p data-i18n="faq_a3">Headings, bold, italic, links, images, lists, code blocks (with syntax highlighting), blockquotes, tables, horizontal rules, and inline code. Standard CommonMark features are fully supported.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container"><p>&copy; 2025 DevToolKit. <a href="../index.html">All Tools</a></p></div>

@@ -31,6 +31,55 @@
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+          {
+              "@type": "Question",
+              "name": "What is a JSON formatter?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "A JSON formatter beautifies minified JSON data by adding proper indentation, line breaks, and spacing. It makes JSON human-readable and easier to debug or inspect. Our tool also validates JSON and pinpoints exact error locations."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "How do I format JSON online?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Simply paste your JSON into the input area and it formats automatically. You can also use the \"Minify\" button to compress back to a single line. Everything runs 100% in your browser — your data never leaves your device."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Is my JSON data safe?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. All processing is client-side using JavaScript on your device. No data is ever sent to any server. DevToolKit does not store, collect, or transmit your JSON data."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "What if my JSON has errors?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Our validator pinpoints the exact character position of syntax errors with a clear explanation of what went wrong. This is our key differentiator from other tools — precise error location with plain-English descriptions."
+              }
+          },
+          {
+              "@type": "Question",
+              "name": "Can I convert JSON to other formats?",
+              "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Use our JSON to CSV converter tool to transform JSON into spreadsheet-friendly CSV format. We also support CSV to JSON conversion for importing data into applications."
+              }
+          }
+      ]
+  }
+  </script>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -94,6 +143,22 @@
       </p>
     </section>
   </main>
+
+    <!-- FAQ Section for SEO -->
+    <div class="tool-about faq-section">
+      <h2>JSON Formatter FAQ</h2>
+      <h3 data-i18n="faq_q1">What is a JSON formatter?</h3>
+      <p data-i18n="faq_a1">A JSON formatter beautifies minified JSON data by adding proper indentation, line breaks, and spacing. It makes JSON human-readable and easier to debug or inspect. Our tool also validates JSON and pinpoints exact error locations.</p>
+      <h3 data-i18n="faq_q2">How do I format JSON online?</h3>
+      <p data-i18n="faq_a2">Simply paste your JSON into the input area and it formats automatically. You can also use the "Minify" button to compress back to a single line. Everything runs 100% in your browser — your data never leaves your device.</p>
+      <h3 data-i18n="faq_q3">Is my JSON data safe?</h3>
+      <p data-i18n="faq_a3">Yes. All processing is client-side using JavaScript on your device. No data is ever sent to any server. DevToolKit does not store, collect, or transmit your JSON data.</p>
+      <h3 data-i18n="faq_q4">What if my JSON has errors?</h3>
+      <p data-i18n="faq_a4">Our validator pinpoints the exact character position of syntax errors with a clear explanation of what went wrong. This is our key differentiator from other tools — precise error location with plain-English descriptions.</p>
+      <h3 data-i18n="faq_q5">Can I convert JSON to other formats?</h3>
+      <p data-i18n="faq_a5">Use our JSON to CSV converter tool to transform JSON into spreadsheet-friendly CSV format. We also support CSV to JSON conversion for importing data into applications.</p>
+    </div>
+
 
   <footer class="footer">
     <div class="container">
