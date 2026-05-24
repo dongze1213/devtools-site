@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://devtools-site-301.pages.dev/sitemap.xml
